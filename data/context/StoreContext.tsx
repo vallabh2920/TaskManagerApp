@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
+import { Alert } from "react-native";
 
 interface Task {
   _id: string;
@@ -95,7 +96,11 @@ export function StoreProvider({ children }: React.PropsWithChildren) {
     setTasks([]); // Clear tasks on logout
   };
 
-  const API_BASE_URL = "http://localhost:5001/api/tasks";
+  const API_BASE_URL =
+    // __DEV__
+    //   ? "http://localhost:5001/api/tasks"
+    //   :
+    "https://taskmanager-be-production.up.railway.app/api/tasks";
 
   // ✅ Fetch All Tasks
   const fetchTasks = async () => {
@@ -112,6 +117,7 @@ export function StoreProvider({ children }: React.PropsWithChildren) {
         return data;
       }
     } catch (error) {
+      Alert.alert("Error fetching tasks:");
       console.error("Error fetching tasks:", error);
     }
   };
@@ -128,6 +134,7 @@ export function StoreProvider({ children }: React.PropsWithChildren) {
         setTaskDetail(data.data);
       }
     } catch (error) {
+      Alert.alert("Error fetching tasks:");
       console.error("Error fetching task:", error);
     }
   };
@@ -150,6 +157,7 @@ export function StoreProvider({ children }: React.PropsWithChildren) {
         router.back();
       }
     } catch (error) {
+      Alert.alert("Error adding task:");
       console.error("Error adding task:", error);
     }
   };
@@ -181,6 +189,8 @@ export function StoreProvider({ children }: React.PropsWithChildren) {
         router.back();
       }
     } catch (error) {
+      Alert.alert("Error updating task:");
+
       console.error("Error updating task:", error);
     }
   };
@@ -203,6 +213,8 @@ export function StoreProvider({ children }: React.PropsWithChildren) {
         await fetchTasks();
       }
     } catch (error) {
+      Alert.alert("Error deleting task:");
+
       console.error("Error deleting task:", error);
     }
   };

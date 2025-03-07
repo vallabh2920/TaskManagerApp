@@ -5,7 +5,7 @@ import { ThemedText } from "@/components/ThemedText";
 import CustomButton from "@/components/ui/CustomButton";
 import CustomTextInput from "@/components/ui/CustomTextInput";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import {
   SafeAreaView,
   View,
@@ -15,6 +15,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Text,
+  Alert,
 } from "react-native";
 
 // 🛠 Define Schema with Zod
@@ -28,6 +29,7 @@ const signupSchema = z.object({
 type SignUpForm = z.infer<typeof signupSchema>;
 
 export default function SignupScreen() {
+  const router = useRouter();
   const {
     control,
     handleSubmit,
@@ -38,8 +40,36 @@ export default function SignupScreen() {
   });
 
   // 🔹 Handle Form Submission
-  const onSubmit = (data: SignUpForm) => {
-    console.log("Login Data:", data);
+  const onSubmit = async (data: SignUpForm) => {
+    try {
+      const response = await fetch(
+        // !__DEV__
+        //   ? "http://localhost:5001/api/auth/signup"
+        //   :
+        "https://taskmanager-be-production.up.railway.app/api/auth/signup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      const result = await response.json();
+      console.log("result", result);
+
+      if (!response.ok) {
+        Alert.alert(result.message || "Something went wrong");
+        throw new Error(result.message || "Something went wrong");
+      }
+      router.replace("/(auth)/login");
+      console.log("Login Success:", result);
+      // 👉 Handle navigation or store authentication token here
+    } catch (error) {
+      console.error("Login Error:", error);
+      // 👉 Show an error message to the user
+    }
   };
 
   return (

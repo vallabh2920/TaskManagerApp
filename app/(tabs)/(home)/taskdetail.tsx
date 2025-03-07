@@ -49,6 +49,7 @@ export default function TaskDetailScreen() {
           shadowColor: "#000",
           shadowOffset: { height: 2, width: 4 },
           shadowOpacity: 0.5,
+          elevation: 10,
           borderRadius: 50,
           justifyContent: "center",
           alignItems: "center",
@@ -80,9 +81,11 @@ export default function TaskDetailScreen() {
             marginTop: 10,
             borderColor: "gray",
             borderWidth: 0.6,
+            backgroundColor: "#FFF",
             shadowColor: "#000",
             shadowOffset: { height: 2, width: 4 },
             shadowOpacity: 0.5,
+            elevation: 20,
             borderRadius: 15,
           }}
         >
@@ -101,9 +104,11 @@ export default function TaskDetailScreen() {
             marginTop: 10,
             borderColor: "gray",
             borderWidth: 0.6,
+            backgroundColor: "#FFF",
             shadowColor: "#000",
             shadowOffset: { height: 2, width: 4 },
             shadowOpacity: 0.5,
+            elevation: 20,
             borderRadius: 15,
           }}
         >
@@ -123,9 +128,11 @@ export default function TaskDetailScreen() {
             marginTop: 10,
             borderColor: "gray",
             borderWidth: 0.6,
+            backgroundColor: "#FFF",
             shadowColor: "#000",
             shadowOffset: { height: 2, width: 4 },
             shadowOpacity: 0.5,
+            elevation: 20,
             borderRadius: 15,
           }}
         >

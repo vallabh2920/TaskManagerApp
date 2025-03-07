@@ -15,6 +15,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Text,
+  Alert,
 } from "react-native";
 import { useStore } from "@/data/context/StoreContext";
 
@@ -38,26 +39,33 @@ export default function LoginScreen() {
     resolver: zodResolver(loginSchema),
     mode: "onChange",
     defaultValues: {
-      email: "john@example.com",
-      password: "password12",
+      email: "",
+      password: "",
     },
   });
 
   // 🔹 Handle Form Submission
   const onSubmit = async (data: LoginForm) => {
     try {
-      const response = await fetch("http://localhost:5001/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        // !__DEV__
+        //   ? "http://localhost:5001/api/auth/login"
+        //   :
+        "https://taskmanager-be-production.up.railway.app/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       const result = await response.json();
       console.log("result", result);
 
       if (!response.ok) {
+        Alert.alert(result.message || "Something went wrong");
         throw new Error(result.message || "Something went wrong");
       }
 

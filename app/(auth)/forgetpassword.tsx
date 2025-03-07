@@ -1,11 +1,19 @@
-import { View, Text } from "react-native";
+import { View, Text, SafeAreaView } from "react-native";
 import React, { FC } from "react";
 
 const forgetpaswword: FC = (props) => {
   return (
-    <View>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: "#FFF",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <Text>forgetpaswword</Text>
-    </View>
+      <Text>Work in Progress</Text>
+    </SafeAreaView>
   );
 };
 

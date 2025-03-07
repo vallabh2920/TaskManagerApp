@@ -18,6 +18,7 @@ import { Feather } from "@expo/vector-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import ListItem from "@/components/ui/ListItem";
 import { useStore } from "@/data/context/StoreContext";
+import { StatusBar } from "expo-status-bar";
 const TITLES = [
   "Record the dismissible tutorial 🎥",
   "Leave 👍🏼 to the video",
@@ -125,6 +126,7 @@ export default function HomeScreen() {
           shadowColor: "#000",
           shadowOffset: { height: 2, width: 4 },
           shadowOpacity: 0.5,
+          elevation: 10,
           borderRadius: 50,
           justifyContent: "center",
           alignItems: "center",

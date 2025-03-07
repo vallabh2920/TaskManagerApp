@@ -28,7 +28,7 @@ const InitialLayout = () => {
       try {
         const token = await AsyncStorage.getItem("jwtToken");
         const response = await fetch(
-          "http://localhost:5001/api/auth/validate-token",
+          "https://taskmanager-be-production.up.railway.app/api/auth/validate-token",
           {
             headers: { Authorization: `Bearer ${token}` },
           }

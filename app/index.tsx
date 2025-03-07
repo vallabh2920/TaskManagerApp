@@ -20,7 +20,12 @@ export default function OnboaringScreen() {
 
       <ThemedText
         type="title"
-        style={{ width: "70%", textAlign: "center", alignSelf: "center" }}
+        style={{
+          width: "70%",
+          textAlign: "center",
+          alignSelf: "center",
+          color: "#000",
+        }}
       >
         Task Management & To-Do List
       </ThemedText>
@@ -40,7 +45,11 @@ export default function OnboaringScreen() {
         title="Get Started"
         href={"/(auth)/login"}
         bgColor="#D4393C"
-        containerStyle={{ width: "90%", alignSelf: "center" }}
+        containerStyle={{
+          width: "90%",
+          alignSelf: "center",
+          marginBottom: 20,
+        }}
       />
     </SafeAreaView>
   );
