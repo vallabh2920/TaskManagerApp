@@ -5,7 +5,7 @@ import { ThemedText } from "@/components/ThemedText";
 import CustomButton from "@/components/ui/CustomButton";
 import CustomTextInput from "@/components/ui/CustomTextInput";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import {
   SafeAreaView,
   View,
@@ -16,6 +16,7 @@ import {
   Keyboard,
   Text,
 } from "react-native";
+import { useStore } from "@/data/context/StoreContext";
 
 // 🛠 Define Schema with Zod
 const loginSchema = z.object({
@@ -27,6 +28,8 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 
 export default function LoginScreen() {
+  const router = useRouter();
+  const { signIn, fetchTasks } = useStore();
   const {
     control,
     handleSubmit,
@@ -34,11 +37,40 @@ export default function LoginScreen() {
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
     mode: "onChange",
+    defaultValues: {
+      email: "john@example.com",
+      password: "password12",
+    },
   });
 
   // 🔹 Handle Form Submission
-  const onSubmit = (data: LoginForm) => {
-    console.log("Login Data:", data);
+  const onSubmit = async (data: LoginForm) => {
+    try {
+      const response = await fetch("http://localhost:5001/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      console.log("result", result);
+
+      if (!response.ok) {
+        throw new Error(result.message || "Something went wrong");
+      }
+
+      await signIn(result.token, result.user);
+      // await fetchTasks();
+
+      router.replace("/(tabs)/(home)");
+      console.log("Login Success:", result);
+      // 👉 Handle navigation or store authentication token here
+    } catch (error) {
+      console.error("Login Error:", error);
+      // 👉 Show an error message to the user
+    }
   };
 
   return (

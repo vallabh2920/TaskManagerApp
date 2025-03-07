@@ -4,18 +4,60 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Slot, Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StoreProvider, useStore } from "@/data/context/StoreContext";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+const InitialLayout = () => {
+  const segments = useSegments();
+  const router = useRouter();
+  const { signOut } = useStore();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = await AsyncStorage.getItem("jwtToken");
+        const response = await fetch(
+          "http://localhost:5001/api/auth/validate-token",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        const data = await response.json();
+        if (!data.valid) {
+          signOut();
+          router.replace("/");
+        }
+        const inTabsGroup = segments[0] === "(auth)";
+        console.log(segments, token, inTabsGroup);
+        if (token) {
+          router.replace("/(tabs)/(home)");
+        } else if (!token) {
+          router.replace("/");
+        }
+      } catch (error) {
+        console.error("Error checking authentication:", error);
+      } finally {
+        SplashScreen.hideAsync();
+      }
+    };
+    checkAuth();
+  }, []);
+
+  return <Slot />;
+};
+
+const RootLayout = () => {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -30,15 +72,15 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
-
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
+      <StoreProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <InitialLayout />
+        </GestureHandlerRootView>
+      </StoreProvider>
     </ThemeProvider>
   );
-}
+};
+
+export default RootLayout;
